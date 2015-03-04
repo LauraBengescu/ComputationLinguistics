@@ -18,20 +18,6 @@ public class Counter {
 		parser = new Parser();
 	}
 	
-	public List<Sentence> parseFiles(File dir) {
-		File directories[] = dir.listFiles();
-		List<Sentence> allSentences = new ArrayList<Sentence>();
-		for (File directory : directories) {
-			File files[] = directory.listFiles();
-			for (File file:files) {
-				String fileName = file.getName();
-				List<Sentence> sentences = parser.parseSentences(fileName); 
-				allSentences.addAll(sentences);
-			}
-		}
-		return allSentences;
-		
-	}
 	
 	public void addPart(List<Sentence> sentences) {
 		for (Sentence sentence:sentences) {

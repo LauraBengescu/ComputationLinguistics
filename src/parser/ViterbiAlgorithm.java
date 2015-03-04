@@ -1,9 +1,7 @@
 package parser;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
 
 public class ViterbiAlgorithm {
 
@@ -12,15 +10,16 @@ public class ViterbiAlgorithm {
 	int[][] backpointer;
 	  //sort out relationships between sentence parsing and counter hashtables;
 	
-	File directory = new File("C:/Users/Laura/Desktop/WSJ-2-12");
-	public ViterbiAlgorithm(){
-		counter = new Counter();
+	
+	public float applyViterbiAlgorithm(File directory){
+		float averageAccuracy = crossValidation(directory);
+		return averageAccuracy;
+		
 	}
 	
 
-	public Tag[] applyToSentence(String sentence) {		
-		Sentence parsedSentence = counter.parser.parseSentence(sentence);
-		List<Word> words = parsedSentence.getWords();		
+	public Tag[] applyToSentence(Sentence sentence) {		
+		List<Word> words = sentence.getWords();		
 		int n = words.size();
 		Tag[] tags = Tag.values();
 		int m = tags.length;
@@ -69,6 +68,67 @@ public class ViterbiAlgorithm {
 		
 		return tagResults;
 	
+	}
+	
+	public List<Sentence> parseFiles(File dir) {
+		File directories[] = dir.listFiles();
+		List<Sentence> allSentences = new ArrayList<Sentence>();
+		Parser parser = new Parser();
+		for (File directory : directories) {
+			File files[] = directory.listFiles();
+			for (File file:files) {
+				
+				String fileName = file.getAbsolutePath();;
+				List<Sentence> sentences = parser.parseSentences(fileName); 
+				allSentences.addAll(sentences);
+			}
+		}
+		return allSentences;
+		
+	}
+	
+	
+	public float crossValidation(File directory) {
+		
+		List<Sentence> allSentences = parseFiles(directory);
+		int n = allSentences.size();
+		int part = n/10;
+		int k = 0; 
+		float[] accuracyArray = new float[10];
+		for (int i=0; i<10; i++) {
+			List<Sentence> testing = allSentences.subList(k, k + part);
+			List<Sentence> training = allSentences;
+			training.removeAll(testing);
+			counter = new Counter();
+			counter.addPart(training);
+			int correct = 0;
+			int total = 0;
+			for (Sentence sentence:testing) {
+				Tag[] result = applyToSentence(sentence);
+				List<Word> words = sentence.getWords();
+				total+= words.size();
+				for (int j=0; j<words.size(); j++) {
+					if (result[j]==words.get(j).getTag()) correct+=1;					
+				}				
+			}
+			float accuracy = correct/total;
+			accuracyArray[i]=accuracy;	
+			k = k + part;
+		}
+		float sum = 0;
+		for (int p=0; p<10; p++){
+			sum+=accuracyArray[p];			
+		}
+		return sum/10;		
+	}
+	
+	
+	public static void main(String[] args) {
+		File directory = new File("C:/Users/Laura/Desktop/WSJ-2-12");
+		ViterbiAlgorithm va = new ViterbiAlgorithm();
+		float averageAccuracy = va.applyViterbiAlgorithm(directory);
+		System.out.println(averageAccuracy);		
+		
 	}
 
 	
