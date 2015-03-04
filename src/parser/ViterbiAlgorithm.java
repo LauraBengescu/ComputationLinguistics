@@ -26,11 +26,12 @@ public class ViterbiAlgorithm {
 		score = new float[m][n];
 		backpointer = new int[m][n];
 		for (int i=0; i<m; i++) {
-			//log prob;
 			score[i][0] = counter.doWTProbability(words.get(0).getWord(), tags[i]) * counter.doTRProbability(Tag.START,tags[i]); //deal with probability method;
+			//System.out.println(score[i][0]);
 		}
+		
 		for (int j=1; j<n; j++) {
-			for (int i=0; i<m; j++) {
+			for (int i=0; i<m; i++) {
 				int max = 0;
 				float prob = 0;
 				for (int k=0; k<m; k++) {
@@ -42,6 +43,7 @@ public class ViterbiAlgorithm {
 						
 				}
 				score[i][j]=prob;
+				System.out.println(score[i][j]);
 				backpointer[i][j]=max;		
 			}
 		}
@@ -76,8 +78,7 @@ public class ViterbiAlgorithm {
 		Parser parser = new Parser();
 		for (File directory : directories) {
 			File files[] = directory.listFiles();
-			for (File file:files) {
-				
+			for (File file:files) {				
 				String fileName = file.getAbsolutePath();;
 				List<Sentence> sentences = parser.parseSentences(fileName); 
 				allSentences.addAll(sentences);
@@ -96,18 +97,22 @@ public class ViterbiAlgorithm {
 		int k = 0; 
 		float[] accuracyArray = new float[10];
 		for (int i=0; i<10; i++) {
-			List<Sentence> testing = allSentences.subList(k, k + part);
-			List<Sentence> training = allSentences;
+			List<Sentence> testing = allSentences.subList(k, k + part);			
+			List<Sentence> training = new ArrayList<Sentence>();
+			training.addAll(allSentences);
 			training.removeAll(testing);
 			counter = new Counter();
 			counter.addPart(training);
+			//System.out.println(counter.tagCounter.values());
 			int correct = 0;
 			int total = 0;
 			for (Sentence sentence:testing) {
-				Tag[] result = applyToSentence(sentence);
-				List<Word> words = sentence.getWords();
-				total+= words.size();
+				Tag[] result = applyToSentence(sentence);				
+				List<Word> words = sentence.getWords();				
+				total += words.size();
 				for (int j=0; j<words.size(); j++) {
+					//System.out.println(result[j]);
+					//System.out.println(words.get(j).getTag());
 					if (result[j]==words.get(j).getTag()) correct+=1;					
 				}				
 			}

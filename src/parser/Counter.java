@@ -9,13 +9,12 @@ public class Counter {
 	public HashMap<String, HashMap<Tag,Integer>> wordTagCount;
 	public HashMap<Tag, Integer> tagCounter;
 	public HashMap<Tag, HashMap<Tag, Integer>> tagRelationships;
-	public Parser parser;
+	
 	
 	public Counter() {
 		wordTagCount = new HashMap<String,HashMap<Tag,Integer>>();
 		tagCounter = new HashMap<Tag,Integer>();
 		tagRelationships = new HashMap<Tag,HashMap<Tag,Integer>>();
-		parser = new Parser();
 	}
 	
 	
@@ -38,17 +37,20 @@ public class Counter {
 	}
 
 	public void addWordTag(Word word) {
-		if (wordTagCount.containsKey(word.getWord())) {
-			HashMap<Tag, Integer> tagList = wordTagCount.get(word);
-			if (tagList.containsKey(word.getTag()))
-				tagList.replace(word.getTag(),tagList.get(word.getTag())+1);
+		String sWord = word.getWord();
+		Tag tag = word.getTag();
+		if (wordTagCount.containsKey(sWord)) {
+			HashMap<Tag, Integer> tagList = wordTagCount.get(sWord);
+			
+			if (tagList.containsKey(tag))
+				tagList.replace(tag,tagList.get(tag)+1);
 			else
-				tagList.put(word.getTag(), 1);
+				tagList.put(tag, 1);
 		}
 		else {
 			HashMap<Tag, Integer> tagList = new HashMap<Tag,Integer>();
-			tagList.put(word.getTag(), 1);
-			wordTagCount.put(word.getWord(), tagList);
+			tagList.put(tag, 1);
+			wordTagCount.put(sWord, tagList);
 		}
 		
 	}
@@ -62,7 +64,7 @@ public class Counter {
 	
 	public void addTagRelationship(Tag tag1, Tag tag2) {
 		if (tagRelationships.containsKey(tag1)) {
-			HashMap<Tag, Integer> tagList = tagRelationships.get(tag2);
+			HashMap<Tag, Integer> tagList = tagRelationships.get(tag1);
 			if (tagList.containsKey(tag2))
 				tagList.replace(tag2,tagList.get(tag2)+1);
 			else
@@ -78,17 +80,31 @@ public class Counter {
 	
 	//get probability that a word is of a specific tag
 	public float doWTProbability(String word, Tag tag) {
-		return wordTagCount.get(word).get(tag)/tagCounter.get(tag);
+		HashMap<Tag,Integer> tagList = wordTagCount.get(word);	
+		if (tagList!=null) {
+			if (tagList.containsKey(tag)){
+				int count = tagList.get(tag);
+				System.out.println("count" + count);
+				System.out.println("tagCounter" + tagCounter.get(tag));
+				System.out.println(Math.log10(count/tagCounter.get(tag)));
+			    return (float) Math.log10(count/tagCounter.get(tag));	    
+		
+			}
+		}
+		
+		return 1;
 	}
 	
 	//get probability that tag2 follows tag1
 	public float doTRProbability(Tag tag1, Tag tag2) {
-		//get the list of tags that follow tag1
 		HashMap<Tag,Integer> tagList = tagRelationships.get(tag1);
-		//find tag2
-		Integer count = tagList.get(tag2);
-		if (count != null) return count/tagCounter.get(tag1);	
-		else return 0; //deal with this;
+		if (tagList!=null) {
+			Integer count = tagList.get(tag2);
+			//System.out.println(count);
+			if (count != null) return count/tagCounter.get(tag1);	
+		}
+		return 1;
+		
 	}
 
 }
