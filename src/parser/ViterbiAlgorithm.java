@@ -1,37 +1,40 @@
 package parser;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-public class ViterbiAlgorithm {
+import algorithm.Algorithm;
+
+public class ViterbiAlgorithm implements Algorithm{
 
 	Counter counter;
 	float[][] score;
 	int[][] backpointer;
 	  //sort out relationships between sentence parsing and counter hashtables;
 	
-	
-	public float applyViterbiAlgorithm(File directory){
-		float averageAccuracy = crossValidation(directory);
-		return averageAccuracy;
-		
+	public ViterbiAlgorithm(Counter counter) {
+		this.counter = counter;
 	}
-	
 
 	public Tag[] applyToSentence(Sentence sentence) {		
-		List<Word> words = sentence.getWords();		
+		List<Word> words = sentence.getWords();	
+		//System.out.println("New sentence");
+		//for (int i=0; i<words.size(); i++) {
+		//	System.out.print(words.get(i).getWord() + " ");
+		//}
+		//System.out.println("\n");
+		//words.remove(0);
 		int n = words.size();
 		Tag[] tags = Tag.values();
 		int m = tags.length;
 		score = new float[m][n];
 		backpointer = new int[m][n];
 		for (int i=0; i<m; i++) {
-			score[i][0] = counter.doWTProbability(words.get(0).getWord(), tags[i]) * counter.doTRProbability(Tag.START,tags[i]); //deal with probability method;
-			//System.out.println(score[i][0]);
+			score[i][0] = counter.doWTProbability(words.get(1).getWord(), tags[i]) * counter.doTRProbability(Tag.START,tags[i]); //deal with probability method;
+			//System.out.println(i + " " + counter.doWTProbability(words.get(1).getWord(), tags[i]));
+			//System.out.println(i + " " + counter.doTRProbability(Tag.START,tags[i]));
 		}
 		
 		for (int j=1; j<n; j++) {
-			for (int i=0; i<m; i++) {
+			for (int i=1; i<m; i++) {
 				int max = 0;
 				float prob = 0;
 				for (int k=0; k<m; k++) {
@@ -43,10 +46,17 @@ public class ViterbiAlgorithm {
 						
 				}
 				score[i][j]=prob;
-				System.out.println(score[i][j]);
+				//System.out.println(score[i][j]);
 				backpointer[i][j]=max;		
 			}
 		}
+		
+		//for (int i=0; i<m; i++) {
+		//	for (int j=0; j<n; j++) {
+		//		System.out.print(i+ " " + j +  " " + score[i][j] + " ");
+		//	}
+		//}
+		
 		
 		float bestLastTagProb = 0;
 		int index = 0;
@@ -67,76 +77,19 @@ public class ViterbiAlgorithm {
 		for (int i=0; i<n; i++) {
 			tagResults[i]=tags[result[i]];			
 		}
+		System.out.println("");
+		for (int i=0; i<tagResults.length; i++) {
+		//	System.out.println(tagResults[i].toString());
+		}
 		
 		return tagResults;
 	
 	}
-	
-	public List<Sentence> parseFiles(File dir) {
-		File directories[] = dir.listFiles();
-		List<Sentence> allSentences = new ArrayList<Sentence>();
-		Parser parser = new Parser();
-		for (File directory : directories) {
-			File files[] = directory.listFiles();
-			for (File file:files) {				
-				String fileName = file.getAbsolutePath();;
-				List<Sentence> sentences = parser.parseSentences(fileName); 
-				allSentences.addAll(sentences);
-			}
-		}
-		return allSentences;
-		
-	}
-	
-	
-	public float crossValidation(File directory) {
-		
-		List<Sentence> allSentences = parseFiles(directory);
-		int n = allSentences.size();
-		int part = n/10;
-		int k = 0; 
-		float[] accuracyArray = new float[10];
-		for (int i=0; i<10; i++) {
-			List<Sentence> testing = allSentences.subList(k, k + part);			
-			List<Sentence> training = new ArrayList<Sentence>();
-			training.addAll(allSentences);
-			training.removeAll(testing);
-			counter = new Counter();
-			counter.addPart(training);
-			//System.out.println(counter.tagCounter.values());
-			int correct = 0;
-			int total = 0;
-			for (Sentence sentence:testing) {
-				Tag[] result = applyToSentence(sentence);				
-				List<Word> words = sentence.getWords();				
-				total += words.size();
-				for (int j=0; j<words.size(); j++) {
-					//System.out.println(result[j]);
-					//System.out.println(words.get(j).getTag());
-					if (result[j]==words.get(j).getTag()) correct+=1;					
-				}				
-			}
-			float accuracy = correct/total;
-			accuracyArray[i]=accuracy;	
-			k = k + part;
-		}
-		float sum = 0;
-		for (int p=0; p<10; p++){
-			sum+=accuracyArray[p];			
-		}
-		return sum/10;		
-	}
-	
-	
-	public static void main(String[] args) {
-		File directory = new File("C:/Users/Laura/Desktop/WSJ-2-12");
-		ViterbiAlgorithm va = new ViterbiAlgorithm();
-		float averageAccuracy = va.applyViterbiAlgorithm(directory);
-		System.out.println(averageAccuracy);		
-		
-	}
 
 	
+	
+	
+
 	
 }
 

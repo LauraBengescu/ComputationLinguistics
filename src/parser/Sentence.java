@@ -10,6 +10,7 @@ public class Sentence implements Serializable {
 	
 	public Sentence(){
 		words = new LinkedList<Word>();
+		words.add(new Word(" ", Tag.START));
 	}
 	
 	public void addWord(Word word){
