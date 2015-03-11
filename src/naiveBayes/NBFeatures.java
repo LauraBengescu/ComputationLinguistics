@@ -6,12 +6,12 @@ import parser.Tag;
 import parser.Word;
 
 public class NBFeatures {
-	private Hashtable<Tag, Integer> numericTagInstances;
-	private Hashtable<Tag, Integer> capitalisedTagInstances;
-	private Hashtable<Tag, Integer> allCapsTagInstances;
-	private Hashtable<Tag, Integer> endsInSTagInstances;
-	private Hashtable<Tag, Integer> tagInstances;
-	private Hashtable<String, Integer> wordInstances;
+	private Hashtable<Tag, Integer> numericTagInstances;  //numerals
+	private Hashtable<Tag, Integer> capitalisedTagInstances; //given a tag, how many words of that tag are capitalised
+	private Hashtable<Tag, Integer> allCapsTagInstances; //given a tag, how many words of that tag are all caps
+	private Hashtable<Tag, Integer> endsInSTagInstances; //given a tag, how many words of that tag end in s 
+	private Hashtable<Tag, Integer> tagInstances;     // how many times each tag has appeared;
+	private Hashtable<String, Integer> wordInstances;  //how many times each word has appeared 
 	private Integer wordsTotal = 0;
 	
 	public NBFeatures(){
@@ -32,6 +32,7 @@ public class NBFeatures {
 		 }
 	}
 	
+	// add the word in depending on what feature it has (0/1) 
 	public void add(Word word){
 		wordsTotal++;
 		Tag tag = word.getTag();
@@ -126,7 +127,8 @@ public class NBFeatures {
 		Integer endsInSInst = endsInSTagInstances.get(tag);
 		return getProbability(endsInSInst, endsInS, tag);
 	}
-	
+		
+	// gets the probability of a word, given a tag, using naive Bayes to compute the total probability 
 	public float getTagProbability(String word, Tag tag){
 		float numericProb, capitalisedProb, allCapsProb, endsInSProb;
 		numericProb = numericTagProbability(tag, isNumeric(word));

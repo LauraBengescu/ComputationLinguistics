@@ -6,7 +6,7 @@ import java.util.List;
 import naiveBayes.NBFeatures;
 
 public class Counter {
-	public HashMap<String, HashMap<Tag,Integer>> wordTagCount;
+	public HashMap<String, HashMap<Tag,Integer>> wordTagCount; //each word w is a key to a list l, such that the list contains all tags that the word has and their count  
 	public HashMap<Tag, Integer> tagCounter;
 	public HashMap<Tag, HashMap<Tag, Integer>> tagRelationships;
 	public NBFeatures naiveBayesFeatures;
@@ -22,7 +22,8 @@ public class Counter {
 		tagRelationships = new HashMap<Tag,HashMap<Tag,Integer>>();
 		naiveBayesFeatures = new NBFeatures();
 	}
-		
+	
+	// goes through all the sentences and adds them in the hashtables
 	public void addPart(List<Sentence> sentences) {
 		for (Sentence sentence:sentences) {
 			addInCounter(sentence);
@@ -89,7 +90,7 @@ public class Counter {
 		double count = 0;
 		double tagCount = 0;
 		HashMap<Tag,Integer> tagList = wordTagCount.get(word);	
-		double result = (double) 0.0001;
+		double result = 0;
 		if (tagList!=null) {
 			if (tagList.containsKey(tag)){
 				count = (double) tagList.get(tag);
@@ -97,7 +98,7 @@ public class Counter {
 			}
 		}
 		int m = wordTagCount.keySet().size();
-		result = (double) ((count+0.0001)/(tagCount+0.0001*m));
+		result = (double) ((count+0.000000001)/(tagCount+0.000000001*m)); //smoothing if the word is not in 
 		return result;
 	}
 	
@@ -112,11 +113,11 @@ public class Counter {
 				tagCount = (double) tagCounter.get(tag1);	
 			}
 		}
-		return (double) ((double) (trCount+0.0001)/(tagCount+0.0001*Tag.values().length));
+		return (double) ((double) (trCount+0.000000001)/(tagCount+0.000000001*Tag.values().length)); // smoothing if the word is not in 
 	}
 	
 	
-	//for Naive Bayes
+	//for Naive Bayes, probability of the tag and word 
 	
 	public double tagProbability(Tag tag, String word){		
 		return (double) (naiveBayesFeatures.getTagProbability(word, tag) * doWTProbability(word,tag));

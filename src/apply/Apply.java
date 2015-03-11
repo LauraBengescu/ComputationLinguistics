@@ -3,13 +3,11 @@ package apply;
 import parser.*;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
-import naiveBayes.NaiveBayes;
 import algorithm.Algorithm;
-import parser.*;
-import computingAlgorithms.CrossValidation;
+import algorithm.CrossValidation;
+import algorithm.NaiveBayesAlgorithm;
+import algorithm.ViterbiAlgorithm;
 
 public class Apply {
 
@@ -18,12 +16,12 @@ public class Apply {
 		File directory = new File("C:/Users/Laura/Desktop/WSJ-2-12");
 		Counter counter = new Counter();
 		CrossValidation c = new CrossValidation(counter);
-		Algorithm algorithm = new ViterbiAlgorithm(counter);
-		Algorithm nbAlgorithm = new NaiveBayes(counter);
-		
-		double averageAccuracy = c.applyAlgorithm(directory, algorithm);
-		System.out.println(averageAccuracy);		
-		
+		Algorithm vAlgorithm = new ViterbiAlgorithm(counter);
+		Algorithm nbAlgorithm = new NaiveBayesAlgorithm(counter);		
+		double averageAccuracy = c.applyAlgorithm(directory, vAlgorithm);
+		double averageAccuracyNB = c.applyAlgorithm(directory, nbAlgorithm);
+		System.out.println("Viterbi accuracy - " + averageAccuracy);
+		System.out.println("Naive Bayes accuracy - " + averageAccuracyNB);
 	}
 
 }
