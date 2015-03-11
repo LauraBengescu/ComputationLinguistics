@@ -85,45 +85,41 @@ public class Counter {
 	}
 	
 	//get probability that a word is of a specific tag
-	public float doWTProbability(String word, Tag tag) {
-		float count = 0;
-		float tagCount = 0;
+	public double doWTProbability(String word, Tag tag) {
+		double count = 0;
+		double tagCount = 0;
 		HashMap<Tag,Integer> tagList = wordTagCount.get(word);	
-		float result = (float) 0.0001;
+		double result = (double) 0.0001;
 		if (tagList!=null) {
 			if (tagList.containsKey(tag)){
-				count = (float) tagList.get(tag);
-				tagCount = (float) tagCounter.get(tag);		
-				//System.out.println("count - " + count);		
-				//System.out.println("tagcount - " + tagCount);
-				result = (count+1)/(tagCount+1);
+				count = (double) tagList.get(tag);
+				tagCount = (double) tagCounter.get(tag);					
 			}
 		}
-		int m = Tag.values().length;
-		return (float) ((count+1)/(tagCount+m));
-		//System.out.println("result " + result ); 
-		//return result;
+		int m = wordTagCount.keySet().size();
+		result = (double) ((count+0.0001)/(tagCount+0.0001*m));
+		return result;
 	}
 	
 	//get probability that tag2 follows tag1
-	public float doTRProbability(Tag tag1, Tag tag2) {
-		float trCount = 0;
-		float tagCount = 0;
+	public double doTRProbability(Tag tag1, Tag tag2) {
+		double trCount = 0;
+		double tagCount = 0;
 		HashMap<Tag,Integer> tagList = tagRelationships.get(tag1);
 		if (tagList!=null) {
 			if (tagList.containsKey(tag2)) {
-				trCount = (float) tagList.get(tag2);
-				tagCount = (float) tagCounter.get(tag1);	
+				trCount = (double) tagList.get(tag2);
+				tagCount = (double) tagCounter.get(tag1);	
 			}
 		}
-		return (float) (trCount+1)/(tagCount+Tag.values().length);
+		return (double) ((double) (trCount+0.0001)/(tagCount+0.0001*Tag.values().length));
 	}
 	
 	
 	//for Naive Bayes
 	
-	public float tagProbability(Tag tag, String word){		
-		return (float) (naiveBayesFeatures.getTagProbability(word, tag) * doWTProbability(word,tag));
+	public double tagProbability(Tag tag, String word){		
+		return (double) (naiveBayesFeatures.getTagProbability(word, tag) * doWTProbability(word,tag));
 	}
 
 	

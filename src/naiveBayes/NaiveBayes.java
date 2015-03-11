@@ -25,7 +25,7 @@ public class NaiveBayes implements Algorithm {
 			double maxProb = 0.0;
 			String word = sentence.getWords().get(i).getWord();
 			for(int j = 0; j < tags.length; j++){
-				float tagProb = counter.tagProbability(tags[j], word);
+				double tagProb = counter.tagProbability(tags[j], word);
 				if(tagProb > maxProb){
 					maxProb = tagProb;
 					result[i] = tags[j];

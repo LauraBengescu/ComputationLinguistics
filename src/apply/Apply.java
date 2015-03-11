@@ -3,6 +3,8 @@ package apply;
 import parser.*;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 import naiveBayes.NaiveBayes;
 import algorithm.Algorithm;
@@ -18,7 +20,8 @@ public class Apply {
 		CrossValidation c = new CrossValidation(counter);
 		Algorithm algorithm = new ViterbiAlgorithm(counter);
 		Algorithm nbAlgorithm = new NaiveBayes(counter);
-		float averageAccuracy = c.applyAlgorithm(directory, algorithm);
+		
+		double averageAccuracy = c.applyAlgorithm(directory, algorithm);
 		System.out.println(averageAccuracy);		
 		
 	}
