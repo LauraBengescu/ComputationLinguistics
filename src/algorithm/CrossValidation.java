@@ -39,7 +39,9 @@ public class CrossValidation {
 	public double crossValidation(File directory, Algorithm algorithm) {
 		List<Sentence> allSentences = parseFiles(directory); //parse all the files;
 		int n = allSentences.size();
+		System.out.println("Size of data - "+ n );
 		int part = n/10;
+		System.out.println(" part size " + part); 
 		int k = 0; 
 		double[] accuracyArray = new double[10];
 		for (int i=0; i<10; i++) { //cross validation, getting the testing sublist (10th part) and keeping the rest for training.

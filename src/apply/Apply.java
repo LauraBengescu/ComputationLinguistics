@@ -19,9 +19,9 @@ public class Apply {
 		Algorithm vAlgorithm = new ViterbiAlgorithm(counter);
 		Algorithm nbAlgorithm = new NaiveBayesAlgorithm(counter);		
 		double averageAccuracy = c.applyAlgorithm(directory, vAlgorithm);
-		double averageAccuracyNB = c.applyAlgorithm(directory, nbAlgorithm);
+		//double averageAccuracyNB = c.applyAlgorithm(directory, nbAlgorithm);
 		System.out.println("Viterbi accuracy - " + averageAccuracy);
-		System.out.println("Naive Bayes accuracy - " + averageAccuracyNB);
+		//System.out.println("Naive Bayes accuracy - " + averageAccuracyNB);
 	}
 
 }

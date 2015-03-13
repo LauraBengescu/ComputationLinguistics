@@ -98,7 +98,7 @@ public class Counter {
 			}
 		}
 		int m = wordTagCount.keySet().size();
-		result = (double) ((count+0.000000001)/(tagCount+0.000000001*m)); //smoothing if the word is not in 
+		result = (double) (Math.log((count+0.001)/(tagCount+0.001*m))); //smoothing if the word is not in 
 		return result;
 	}
 	
@@ -113,9 +113,8 @@ public class Counter {
 				tagCount = (double) tagCounter.get(tag1);	
 			}
 		}
-		return (double) ((double) (trCount+0.000000001)/(tagCount+0.000000001*Tag.values().length)); // smoothing if the word is not in 
+		return (double) (Math.log((trCount+0.001)/(tagCount+0.001*Tag.values().length))); // smoothing if the word is not in 
 	}
-	
 	
 	//for Naive Bayes, probability of the tag and word 
 	

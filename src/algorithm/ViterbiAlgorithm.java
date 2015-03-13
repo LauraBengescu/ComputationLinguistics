@@ -25,16 +25,16 @@ public class ViterbiAlgorithm implements Algorithm{
 		score = new double[m][n];
 		backpointer = new int[m][n];
 		for (int i=0; i<m; i++) {
-			score[i][0] = counter.doWTProbability(words.get(0).getWord(), tags[i]) * counter.doTRProbability(Tag.START,tags[i]); 			
+			score[i][0] = counter.doWTProbability(words.get(0).getWord(), tags[i]) + counter.doTRProbability(Tag.START,tags[i]); 			
 		}
-		int c = 0;
+	
 		for (int j=1; j<n; j++) {
 			for (int i=0; i<m; i++) {
 				int max = 0;
-				double prob = 0;
-				double newProb = 0;
+				double prob = Double.NEGATIVE_INFINITY;
+				double newProb = Double.NEGATIVE_INFINITY;
 				for (int k=0; k<m; k++) {
-					newProb = score[k][j-1]*counter.doTRProbability(tags[k],tags[i])*counter.doWTProbability(words.get(j).getWord(),tags[i]);
+					newProb = score[k][j-1]+counter.doTRProbability(tags[k],tags[i])+counter.doWTProbability(words.get(j).getWord(),tags[i]);
 					if (newProb>prob) {
 						prob=newProb;
 						max = k;
@@ -42,13 +42,13 @@ public class ViterbiAlgorithm implements Algorithm{
 						
 				}
 				score[i][j]=prob;				
-				//if (prob == 0) System.out.println(i + " " + j + " " + score[i][j]);
+				if (prob == 0) System.out.println(i + " " + j + " " + score[i][j]);
 				backpointer[i][j]=max;		
 			}
 		}
 		//System.out.println(c);
 				
-		double bestLastTagProb = 0;
+		double bestLastTagProb = Double.NEGATIVE_INFINITY;
 		int index = 0;
 		for (int i=0; i<m; i++) {
 			double newValue = score[i][n-1];
