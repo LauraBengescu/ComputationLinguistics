@@ -137,12 +137,12 @@ public class NBFeatures {
 		endsInSProb = endsInSTagProbability(tag, endsInS(word));
 		float tagProb = (float) tagInstances.get(tag) / (float) wordsTotal;
 		float wordProb = wordProbability(word);
-		return tagProb * numericProb * capitalisedProb * allCapsProb * endsInSProb / wordProb;
+		return (float) Math.log(tagProb * numericProb * capitalisedProb * allCapsProb * endsInSProb / wordProb);
 	}
 
 	private float wordProbability(String word) {
 		Integer instances = wordInstances.get(word);
 		if(instances == null) instances = 1;
-		return (float) instances / (float) wordsTotal;
+		return (float) ((float) instances / (float) wordsTotal);
 	}
 }

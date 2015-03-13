@@ -32,7 +32,7 @@ public class Parser {
 					try {
 					Tag tag = Tag.valueOf(currentTag);					
 					readingTag = false;
-					result.addWord(new Word(currentWord, tag));
+					result.addWord(new Word(currentWord, tag));					
 					currentWord = "";
 					currentTag = "";
 					}

@@ -119,7 +119,7 @@ public class Counter {
 	//for Naive Bayes, probability of the tag and word 
 	
 	public double tagProbability(Tag tag, String word){		
-		return (double) (naiveBayesFeatures.getTagProbability(word, tag) * doWTProbability(word,tag));
+		return (double) (naiveBayesFeatures.getTagProbability(word, tag) + doWTProbability(word,tag));
 	}
 
 	

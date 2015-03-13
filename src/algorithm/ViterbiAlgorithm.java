@@ -34,7 +34,7 @@ public class ViterbiAlgorithm implements Algorithm{
 				double prob = Double.NEGATIVE_INFINITY;
 				double newProb = Double.NEGATIVE_INFINITY;
 				for (int k=0; k<m; k++) {
-					newProb = score[k][j-1]+counter.doTRProbability(tags[k],tags[i])+counter.doWTProbability(words.get(j).getWord(),tags[i]);
+					newProb = score[k][j-1] + counter.doTRProbability(tags[k],tags[i]) + counter.doWTProbability(words.get(j).getWord(),tags[i]);
 					if (newProb>prob) {
 						prob=newProb;
 						max = k;

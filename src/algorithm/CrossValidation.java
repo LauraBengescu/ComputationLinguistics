@@ -3,7 +3,6 @@ package algorithm;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import parser.Counter;
 import parser.Parser;
 import parser.Sentence;
@@ -59,8 +58,6 @@ public class CrossValidation {
 				total += words.size();
 				for (int j=0; j<words.size(); j++) {
 					if (result[j]==words.get(j).getTag()) correct+=1;	//if prediction is right, correct increments
-					//else 
-				    //System.out.println(words.size() + " - " + j + " " + words.get(j).getTag().toString() + " - " + result[j]);
 				}
 			}
 			double accuracy = (double) correct/(double) total; // getting the accuracy
