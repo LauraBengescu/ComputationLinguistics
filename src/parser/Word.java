@@ -1,6 +1,8 @@
 package parser;
 
 public class Word {
+	//class representing a word 
+	
 	private Tag tag;
 	private String word;
 	

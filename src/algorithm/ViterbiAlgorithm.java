@@ -7,10 +7,11 @@ import parser.Tag;
 import parser.Word;
 
 public class ViterbiAlgorithm implements Algorithm{
+	//implements Viterbi
 
 	Counter counter;
-	double[][] score;
-	int[][] backpointer;
+	double[][] score; //storing the scores using probabilities 
+	int[][] backpointer; //to get back and get the best result 
 	
 	public ViterbiAlgorithm(Counter counter) {
 		this.counter = counter;
@@ -18,13 +19,13 @@ public class ViterbiAlgorithm implements Algorithm{
 
 	public Tag[] applyToSentence(Sentence sentence) {		
 		List<Word> words = sentence.getWords();	
-		//System.out.println("New sentence");
 		int n = words.size();
 		Tag[] tags = Tag.values();
 		int m = tags.length;
 		score = new double[m][n];
 		backpointer = new int[m][n];
-		for (int i=0; i<m; i++) {
+		//initialising probabilities for dummy tag START
+		for (int i=0; i<m; i++) {  
 			score[i][0] = counter.doWTProbability(words.get(0).getWord(), tags[i]) + counter.doTRProbability(Tag.START,tags[i]); 			
 		}
 	
@@ -46,8 +47,7 @@ public class ViterbiAlgorithm implements Algorithm{
 				backpointer[i][j]=max;		
 			}
 		}
-		//System.out.println(c);
-				
+		
 		double bestLastTagProb = Double.NEGATIVE_INFINITY;
 		int index = 0;
 		for (int i=0; i<m; i++) {
@@ -55,22 +55,23 @@ public class ViterbiAlgorithm implements Algorithm{
 			if (newValue>bestLastTagProb) {
 				bestLastTagProb=newValue;
 				index = i;
-			}
-			
+			}			
 		}
+		// getting the best indices in result;
 		int[] result = new int[n];
 		result[n-1]=index;
 		for (int j = n-2; j>=0; j--) {
 			result[j] = backpointer[result[j+1]][j+1];
 		}
+		//get a tag array of the result using the previous indices 
 		Tag[] tagResults = new Tag[n];
 		for (int i=0; i<n; i++) {
 			tagResults[i]=tags[result[i]];			
 		}
+		
 		return tagResults;
 	
 	}
-
 	
 }
 

@@ -8,6 +8,8 @@ import java.util.List;
 
 
 public class Parser {
+	//parses the sentences using the string sentences from the files. 
+	
 	public Sentence parseSentence(String sentence){
 		int i = 0;
 		Sentence result = new Sentence();
@@ -28,15 +30,16 @@ public class Parser {
 				}
 			}
 			else{
-				if(currentChar == ' '){				
+				if(currentChar == ' '){		// means we've reached the next word so see if tag is of recognizable value 		
 					try {
 					Tag tag = Tag.valueOf(currentTag);					
 					readingTag = false;
-					result.addWord(new Word(currentWord, tag));					
+					result.addWord(new Word(currentWord, tag)); //add word to the sentence		
 					currentWord = "";
 					currentTag = "";
 					}
-					catch (IllegalArgumentException e) {
+					catch (IllegalArgumentException e) { 
+						// if the tag is not in the list of tags, then this wasn't a right word-tag so start over
 						readingTag = false;
 						currentWord = "";
 						currentTag = "";
@@ -64,7 +67,7 @@ public class Parser {
             		results.add(current);
             		current = "";
             	}
-            	else if(!line.equals("======================================")){
+            	else if(!line.equals("======================================")){ 
             		current += line;
             	}	
             }

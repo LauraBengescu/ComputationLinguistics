@@ -6,10 +6,12 @@ import java.util.List;
 import naiveBayes.NBFeatures;
 
 public class Counter {
-	public HashMap<String, HashMap<Tag,Integer>> wordTagCount; //each word w is a key to a list l, such that the list contains all tags that the word has and their count  
-	public HashMap<Tag, Integer> tagCounter;
-	public HashMap<Tag, HashMap<Tag, Integer>> tagRelationships;
-	public NBFeatures naiveBayesFeatures;
+	// storing the statistics and counts for the words, tags, and bigrams and calculate the probabilities 
+	
+	public HashMap<String, HashMap<Tag,Integer>> wordTagCount;  // Each word has a list of tags that it is associated with and the counts of each association  
+	public HashMap<Tag, Integer> tagCounter; //how many times each tag appears 
+	public HashMap<Tag, HashMap<Tag, Integer>> tagRelationships; // how many times each sequence of tags appears 
+	public NBFeatures naiveBayesFeatures; // for naive bayes 
 	
 	
 	public Counter() {
@@ -30,6 +32,7 @@ public class Counter {
 		}
 	}
 	
+	//adds the words and the bigrams in counter 
 	public void addInCounter(Sentence sentence) {
 		List<Word> words = sentence.getWords();
 		int size = words.size();
@@ -40,9 +43,27 @@ public class Counter {
 			naiveBayesFeatures.add(words.get(i));
 		}
 		
-		
+	}
+	
+	//specifically for adding all words when doing cross validation 
+	public void addPartTest(List<Sentence> sentences) {
+		for (Sentence sentence:sentences) {
+			addInCounterTest(sentence);
+		}
 	}
 
+    //adds all words in counter, but not the bigrams.	
+	private void addInCounterTest(Sentence sentence) {
+		List<Word> words = sentence.getWords();
+		int size = words.size();
+		for (int i=0; i<size; i++) {
+			addWordTag(words.get(i));
+			addTag(words.get(i).getTag());
+			naiveBayesFeatures.add(words.get(i));
+		}
+	}
+
+	//adds the word and corresponding tag to the right hashtable
 	public void addWordTag(Word word) {
 		String sWord = word.getWord();
 		Tag tag = word.getTag();
@@ -62,6 +83,7 @@ public class Counter {
 		
 	}
 	
+	//add the tag and increment the number of its appearances 
 	public void addTag(Tag tag) {
 		if (tagCounter.containsKey(tag))
 			 tagCounter.replace(tag, tagCounter.get(tag)+1);
@@ -69,6 +91,7 @@ public class Counter {
 			tagCounter.put(tag, 1);
 	}
 	
+	//add tag sequence, tag1 tag2 
 	public void addTagRelationship(Tag tag1, Tag tag2) {
 		if (tagRelationships.containsKey(tag1)) {
 			HashMap<Tag, Integer> tagList = tagRelationships.get(tag1);
@@ -116,12 +139,12 @@ public class Counter {
 		return (double) (Math.log((trCount+0.001)/(tagCount+0.001*Tag.values().length))); // smoothing if the word is not in 
 	}
 	
-	//for Naive Bayes, probability of the tag and word 
-	
+	//for Naive Bayes, probability of the tag and word 	
 	public double tagProbability(Tag tag, String word){		
 		return (double) (naiveBayesFeatures.getTagProbability(word, tag) + doWTProbability(word,tag));
 	}
 
+	
 	
 	
 	

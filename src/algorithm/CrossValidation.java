@@ -34,8 +34,8 @@ public class CrossValidation {
 		
 	}
 	
-	
-	public double crossValidation(File directory, Algorithm algorithm) {
+	//algorithm = Viterbi or Bayes, and type = 0 for having unknown words and 1 for no unknown words. 
+	public double crossValidation(File directory, Algorithm algorithm, int type) {
 		List<Sentence> allSentences = parseFiles(directory); //parse all the files;
 		int n = allSentences.size();
 		System.out.println("Size of data - "+ n );
@@ -43,13 +43,15 @@ public class CrossValidation {
 		System.out.println(" part size " + part); 
 		int k = 0; 
 		double[] accuracyArray = new double[10];
-		for (int i=0; i<10; i++) { //cross validation, getting the testing sublist (10th part) and keeping the rest for training.
+		for (int i=0; i<10; i++) { 
+			//cross validation, getting the testing sublist (10th part) and keeping the rest for training.
 			List<Sentence> testing = allSentences.subList(k, k + part);			
 			List<Sentence> training = new ArrayList<Sentence>();
 			training.addAll(allSentences);
 			training.removeAll(testing);
 			counter.reset(); //new training data, new counter
 			counter.addPart(training);
+			if (type == 1) counter.addPartTest(testing); // if no unknown words, we add them in, but ignore the bigrams
 			int correct = 0;
 			int total = 0;
 			for (Sentence sentence:testing) {
@@ -72,8 +74,8 @@ public class CrossValidation {
 		return sum/10;	//getting the average accuracy	
 	}
 	
-	public double applyAlgorithm(File directory, Algorithm algorithm){ //applies the chosen algorithm using cross validation; 
-		double averageAccuracy = crossValidation(directory, algorithm);
+	public double applyAlgorithm(File directory, Algorithm algorithm, int type){ //applies the chosen algorithm using cross validation; 
+		double averageAccuracy = crossValidation(directory, algorithm, type);
 		return averageAccuracy;
 		
 	}

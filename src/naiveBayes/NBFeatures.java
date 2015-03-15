@@ -6,6 +6,8 @@ import parser.Tag;
 import parser.Word;
 
 public class NBFeatures {
+	// features for Naive Bayes 
+	
 	private Hashtable<Tag, Integer> numericTagInstances;  //numerals
 	private Hashtable<Tag, Integer> capitalisedTagInstances; //given a tag, how many words of that tag are capitalised
 	private Hashtable<Tag, Integer> allCapsTagInstances; //given a tag, how many words of that tag are all caps
